@@ -1,8 +1,9 @@
 import multer from 'multer';
 import path from 'path';
 import { RequestHandler } from 'express';
+import { allowedFileTypes, allowedFileExtensions } from '../config/allowedFiles';
 
-class FileUploader { 
+class FileUploader {
     public static uploadFile(fieldName: string, folderName: string): RequestHandler {
         const storage = multer.diskStorage({
             destination: (req, file, cb) => {
@@ -15,9 +16,11 @@ class FileUploader {
         return multer({ storage, fileFilter: FileUploader.imageFilter }).single(fieldName);
     }
     public static imageFilter(req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) {
-        const allowedTypes = /jpeg|jpg|png|gif|webp/;
-        const isValidExt = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const isValidMime = allowedTypes.test(file.mimetype);
+        const allowedMimeTypes = Object.values(allowedFileTypes);
+        const allowedExtensions = Object.values(allowedFileExtensions);
+        const fileExt = path.extname(file.originalname).toLowerCase();
+        const isValidExt = allowedExtensions.includes(fileExt as allowedFileExtensions);
+        const isValidMime = allowedMimeTypes.includes(file.mimetype as allowedFileTypes);
         if (isValidExt && isValidMime) cb(null, true);
         else cb(new Error('Only image files are allowed'));
     }
