@@ -11,8 +11,8 @@ const port: number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 const userRoutes: UserRoutes = new UserRoutes();
 const authRoutes: AuthenticationRoutes = new AuthenticationRoutes();
 app.use(express.json());
-app.use('/api/users', userRoutes.initRoutes());
 app.use('/api/auth', authRoutes.initRoutes());
+app.use('/api/users', userRoutes.initRoutes());
 
 const db = new ConnectDb();
 
