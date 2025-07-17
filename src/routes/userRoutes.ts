@@ -9,7 +9,7 @@ class UserRoutes {
         const userController = new UserController();
         this.router.use(AuthenticationMiddleware.authenticate);
         this.router.get('/', userController.getUsers);
-        this.router.post('/', FileUploader.uploadFile('avater', 'profile-images'),userController.createUser);
+        this.router.post('/', FileUploader.singleUploadFile('avater', 'profile-images'),userController.createUser);
         this.router.get('/:id', userController.getUserById);
         this.router.put('/:id', userController.updateUser);
         this.router.delete('/:id', userController.deleteUser);
