@@ -9,13 +9,15 @@ export interface UserSchema extends Document {
     email: string;
     password: string;
     role?: UserRole;
+    avatar?: string;
 }
 
 const userSchema = new Schema<UserSchema>({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, minlength: 5, maxlength: 1024 },
-    role: { type: String, enum: Object.values(UserRole), default: UserRole.Guest }
+    role: { type: String, enum: Object.values(UserRole), default: UserRole.Guest },
+    avatar: { type: String }
 });
 
 export default mongoose.model<UserSchema>('User', userSchema);

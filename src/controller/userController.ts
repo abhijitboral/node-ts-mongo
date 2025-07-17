@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User  from '../model/user';
 import { hashPassword } from '../utility/passwordhash';
 import { validateUser } from '../utility/uservalidation';
+import FileUploader from '../lib/fileUploader';
 
 class UserController {
     public async getUsers(req: Request, res: Response): Promise< Response> {
@@ -19,16 +20,19 @@ class UserController {
     }
 
     public async createUser(req: Request, res: Response) {
+        console.log('Creating user with data:', req);
         let { name, email, password, role } = req.body;
-        console.log('Creating user with data:', { name, email, password, role });
         try {
             const isValid = validateUser(req.body) as boolean;
             if (!isValid) {
                 return res.status(400).json({ message: 'Invalid user data' });
             }
-            
+            if (!req.file) {
+                return res.status(400).json({ message: 'Image file is required' });
+            }
+            const imagePath = `/uploads/profile-images/${req.file.filename}`;
             const hashedPassword = await hashPassword(password);
-            const user = new User({ name, email, password: hashedPassword, role });
+            const user = new User({ name, email, password: hashedPassword, role, avatar: imagePath });
             await user.save();
             res.status(201).json({ message: 'User created successfully', user });
         }

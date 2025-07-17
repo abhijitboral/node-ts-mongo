@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import dotenv from 'dotenv';
+import path from 'path';
 
 import UserRoutes from './routes/userRoutes';
 import AuthenticationRoutes from './routes/authenticationRoutes';
@@ -11,6 +12,8 @@ const port: number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 const userRoutes: UserRoutes = new UserRoutes();
 const authRoutes: AuthenticationRoutes = new AuthenticationRoutes();
 app.use(express.json());
+
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/auth', authRoutes.initRoutes());
 app.use('/api/users', userRoutes.initRoutes());
 
