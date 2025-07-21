@@ -17,7 +17,8 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/auth', authRoutes.initRoutes());
 app.use('/api/users', userRoutes.initRoutes());
 
-const db = new ConnectDb();
+//const db = new ConnectDb();
+const db = ConnectDb.getInstance();
 
 db.connect().then(():void => {
     app.listen(port, ():void => { 
