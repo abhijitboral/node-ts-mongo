@@ -15,7 +15,7 @@ class FileUploader {
         });
         return multer({ storage, fileFilter: FileUploader.imageFilter }).single(fieldName);
     }
-    public static imageFilter(req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) {
+    public static imageFilter(req: any, file: Express.Multer.File, cb: multer.FileFilterCallback):void {
         const allowedMimeTypes      = Object.values(allowedFileTypes);
         const allowedExtensions     = Object.values(allowedFileExtensions);
         const fileExt               = path.extname(file.originalname).toLowerCase();
