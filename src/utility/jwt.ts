@@ -7,19 +7,19 @@ class JWTUtility {
     private static expiresIn: string = config.jwt.expiresIn;
 
     private static getSecretKey(): string {
-        if (!JWTUtility.secretKey) {
+        if (!this.secretKey) {
             throw new Error('JWT secret key is not defined');
         }
-        return JWTUtility.secretKey;
+        return this.secretKey;
     }
 
     public static generateToken(payload: object): string {
-        return jwt.sign(payload, JWTUtility.getSecretKey(), { expiresIn: JWTUtility.expiresIn } as jwt.SignOptions);
+        return jwt.sign(payload, this.getSecretKey(), { expiresIn: this.expiresIn } as jwt.SignOptions);
     }
 
     public static verifyToken(token: string): jwt.JwtPayload | null {
         try {
-            return jwt.verify(token, JWTUtility.getSecretKey()) as jwt.JwtPayload;
+            return jwt.verify(token, this.getSecretKey()) as jwt.JwtPayload;
         } catch (error) {
             console.error('Error verifying token:', error);
             return null;
