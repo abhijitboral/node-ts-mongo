@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import User  from '../model/user';
 import { hashPassword } from '../utility/passwordhash';
 import { validateUser } from '../utility/uservalidation';
-import FileUploader from '../lib/fileUploader';
 
 class UserController {
     public async getUsers(req: Request, res: Response): Promise< Response> {
@@ -20,7 +19,7 @@ class UserController {
     }
 
     public async createUser(req: Request, res: Response) {
-        console.log('Creating user with data:', req);
+        //console.log('Creating user with data:', req);
         let { name, email, password, role } = req.body;
         try {
             const isValid = validateUser(req.body) as boolean;

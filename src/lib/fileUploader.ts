@@ -20,7 +20,7 @@ class FileUploader {
         const allowedExtensions     = Object.values(allowedFileExtensions);
         const fileExt               = path.extname(file.originalname).toLowerCase();
         const isValidExt            = allowedExtensions.includes(fileExt as allowedFileExtensions);
-        const isValidMime = allowedMimeTypes.includes(file.mimetype as allowedFileTypes);
+        const isValidMime           = allowedMimeTypes.includes(file.mimetype as allowedFileTypes);
         if (isValidExt && isValidMime) cb(null, true);
         else cb(new Error('Only image files are allowed'));
     }
