@@ -19,14 +19,8 @@ app.use(cors());
 const port: number = (typeof config.port === "string" )? parseInt(config.port) : config.port;
 const userRoutes: UserRoutes = new UserRoutes();
 const authRoutes: AuthenticationRoutes = new AuthenticationRoutes();
-
-
-app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
-app.use("/api/auth", authRoutes.initRoutes());
-app.use("/api/users", userRoutes.initRoutes());
-
-
-if (process.env.NODE_ENV === 'production') { 
+console.log(`Environment: ${config.env}`);
+if (config.env === 'production') { 
 	app.use(
 		rateLimit({
 			windowMs: 15 * 60 * 1000, // 15 minutes
@@ -36,6 +30,10 @@ if (process.env.NODE_ENV === 'production') {
 	);
 }
 
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+app.use("/api/auth", authRoutes.initRoutes());
+app.use("/api/users", userRoutes.initRoutes());
+
 if (cluster.isPrimary) {
 	const numCPUs = os.cpus().length;
 	console.log(`CPU: ${numCPUs} , Master ${process.pid} is running on - ${process.env.NODE_ENV} environment`);
@@ -43,9 +41,13 @@ if (cluster.isPrimary) {
 		cluster.fork();
 	}
 	cluster.on("exit", (worker, code, signal) => {
-		console.log(`Worker ${worker.process.pid} died`);
+		console.log(`Worker ${worker.process.pid} exited.`);
+		console.log(`Exit code: ${code}`);
+		console.log(`Signal: ${signal}`);
+		console.log('Starting a new worker...');
 	});
 } else {
+	console.log(`Worker ${process.pid} started`);
 	//const db = new ConnectDb();
 	const db = ConnectDb.getInstance();
 	db.connect()
