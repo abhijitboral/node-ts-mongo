@@ -18,7 +18,7 @@ class UserController {
         }
     }
 
-    public async createUser(req: Request, res: Response) {
+    public async createUser(req: Request, res: Response): Promise<Response> {
         //console.log('Creating user with data:', req);
         let { name, email, password, role } = req.body;
         try {
@@ -33,7 +33,7 @@ class UserController {
             const hashedPassword = await hashPassword(password);
             const user = new User({ name, email, password: hashedPassword, role, avatar: imagePath });
             await user.save();
-            res.status(201).json({ message: 'User created successfully', user });
+            return res.status(201).json({ message: 'User created successfully', user });
         }
         catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
@@ -41,7 +41,7 @@ class UserController {
         }
     }
 
-    public async getUserById(req: Request, res: Response) {
+    public async getUserById(req: Request, res: Response): Promise<Response> {
         try {
             if (req.params.id) {
                 const user = await User.findById(req.params.id);
@@ -49,6 +49,8 @@ class UserController {
                     return res.status(404).json({ message: 'User not found' });
                 }
                 return res.status(200).json(user);
+            } else {
+                return res.status(400).json({ message: 'User ID is required' });
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
@@ -57,7 +59,7 @@ class UserController {
         }
     }
 
-    public async updateUser(req: Request, res: Response) {
+    public async updateUser(req: Request, res: Response): Promise<Response> {
         try {
             if (req.params.id) {
                 const user = await User.findById(req.params.id);
@@ -78,6 +80,8 @@ class UserController {
                 user.role = role;
                 await user.save();
                 return res.status(200).json({ message: 'User updated successfully' });
+            } else {
+                return res.status(400).json({ message: 'User ID is required' });
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
@@ -85,8 +89,21 @@ class UserController {
         }
     }
 
-    public deleteUser(req: Request, res: Response) {
-        res.send(`User with ID: ${req.params.id} deleted`);
+    public async deleteUser(req: Request, res: Response): Promise<Response> {
+        try {
+            if (req.params.id) {
+                const user = await User.findByIdAndDelete(req.params.id);
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+                return res.status(200).json({ message: 'User deleted successfully' });
+            } else {
+                return res.status(400).json({ message: 'User ID is required' });
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            return res.status(500).json({ message: 'Error deleting user', error: errorMessage });
+        }
     }
 }
 
