@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User  from '../model/user';
 import { hashPassword } from '../utility/passwordhash';
 import { validateUser } from '../utility/uservalidation';
+//import ErrorHandlling from '../helper/errorHandlling';
 
 class UserController {
     public async getUsers(req: Request, res: Response): Promise< Response> {
@@ -13,7 +14,8 @@ class UserController {
             return res.status(200).json(users);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error fetching users', error: errorMessage });
+            //return res.status(500).json({ message: 'Error fetching users', error: errorMessage });
+            throw new Error(errorMessage);
             
         }
     }
@@ -37,12 +39,14 @@ class UserController {
         }
         catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error creating user', error: errorMessage }); 
+            //return res.status(500).json({ message: 'Error creating user', error: errorMessage }); 
+            throw new Error(errorMessage);
         }
     }
 
     public async getUserById(req: Request, res: Response): Promise<Response> {
         try {
+            //throw new Error("Broken");
             if (req.params.id) {
                 const user = await User.findById(req.params.id);
                 if (!user) {
@@ -54,7 +58,9 @@ class UserController {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error fetching user', error: errorMessage });
+            //throw new ErrorHandlling(errorMessage, 500);
+            throw new Error(errorMessage);
+            //return res.status(500).json({ message: 'Error fetching user', error: errorMessage });
             
         }
     }
@@ -85,7 +91,8 @@ class UserController {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error updating user', error: errorMessage });
+            //return res.status(500).json({ message: 'Error updating user', error: errorMessage });
+            throw new Error(errorMessage);
         }
     }
 
@@ -102,7 +109,8 @@ class UserController {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error deleting user', error: errorMessage });
+            throw new Error(errorMessage);
+            //return res.status(500).json({ message: 'Error deleting user', error: errorMessage });
         }
     }
 }

@@ -6,7 +6,7 @@ const userValidationSchema:joi.ObjectSchema = joi.object({
     password:   joi.string().min(5).max(1024).required(),
     role:       joi.string().valid('ADMIN', 'USER', 'GUEST').optional()
 });
-export const validateUser = (user: any): boolean => {
+export const validateUser = (user: unknown): boolean => {
     const { error } = userValidationSchema.validate(user);
     if (error) {
         throw new Error(error.details[0].message);

@@ -10,11 +10,14 @@ import UserRoutes from "./routes/userRoutes";
 import AuthenticationRoutes from "./routes/authenticationRoutes";
 import ConnectDb from "./db/connect";
 import config from "./config/config";
+import ErrorResponse from "./middleware/errorResponse";
 
 dotenv.config();
 const app: Express = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+//app.use(ErrorResponse);
 
 const port: number = (typeof config.port === "string" )? parseInt(config.port) : config.port;
 const userRoutes: UserRoutes = new UserRoutes();
@@ -34,6 +37,8 @@ app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 app.use("/api/auth", authRoutes.initRoutes());
 app.use("/api/users", userRoutes.initRoutes());
 
+app.use(ErrorResponse.errorHandle);
+
 if (cluster.isPrimary) {
 	const numCPUs = os.cpus().length;
 	console.log(`CPU: ${numCPUs} , Master ${process.pid} is running on - ${process.env.NODE_ENV} environment`);
@@ -51,13 +56,13 @@ if (cluster.isPrimary) {
 	//const db = new ConnectDb();
 	const db = ConnectDb.getInstance();
 	db.connect()
-		.then((): void => {
-			app.listen(port, (): void => {
-				console.log(`Server is running on port ${port}`);
-			});
-		})
-		.catch((err): never => {
-			console.error("Failed to connect to database:", err);
-			process.exit(1);
-		});
+				.then((): void => {
+					app.listen(port, (): void => {
+						console.log(`Server is running on port ${port}`);
+					});
+				})
+				.catch((err): never => {
+					console.error("Failed to connect to database:", err);
+					process.exit(1);
+				});
 }

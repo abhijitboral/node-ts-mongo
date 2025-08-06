@@ -18,7 +18,8 @@ class AuthController {
             return res.status(201).json({ message: 'User registered successfully', user });
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error registering user', error: errorMessage });
+            //return res.status(500).json({ message: 'Error registering user', error: errorMessage });
+            throw new Error(errorMessage);
         }
     }
     public async login(req: Request, res: Response): Promise<Response> {
@@ -36,7 +37,8 @@ class AuthController {
             return res.status(200).json({ message: 'Login successful', token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            return res.status(500).json({ message: 'Error logging in', error: errorMessage });
+            //return res.status(500).json({ message: 'Error logging in', error: errorMessage });
+            throw new Error(errorMessage);
         }
     }
 }

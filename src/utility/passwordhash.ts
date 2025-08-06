@@ -9,5 +9,5 @@ export const comparePasswords = async (password: string, hash: string): Promise<
     return await bcrypt.compare(password, hash);
 };
 export const isValidPassword = (password: string): boolean => {
-    return password.length >= 5 && password.length <= 1024;
+    return password.length >= 5 && password.length <= 100;
 };
